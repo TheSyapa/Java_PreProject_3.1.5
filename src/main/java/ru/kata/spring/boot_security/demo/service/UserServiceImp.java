@@ -13,6 +13,7 @@ import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
@@ -51,16 +52,20 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     public User findByEmail(String email) {
-        return userDao.findByEmail(email);
+        Optional<User> user = userDao.findByEmail(email) ;
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(String.format("User '%s' not found", email));
+        }
+        return user.get();
     }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userDao.findByEmail(email);
-        if (user == null) {
+        Optional<User> user = userDao.findByEmail(email) ;
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException(String.format("User '%s' not found", email));
         }
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.getAuthorities());
+        return user.get();
     }
 }

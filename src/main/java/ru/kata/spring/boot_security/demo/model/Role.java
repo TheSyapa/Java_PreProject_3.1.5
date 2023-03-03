@@ -53,7 +53,7 @@ public class Role implements GrantedAuthority {
     // Методы интерфейса
     @Override
     public String toString() {
-        return getName().substring(getName().indexOf('_') + 1);
+        return name.replace("ROLE_", "");
     }
 
     @Override
