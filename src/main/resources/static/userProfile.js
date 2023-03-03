@@ -7,7 +7,7 @@ function userProfile() {
         .then(res => res.json())
         .then(js => {
             $('#emailUser').append(`<span>${js.email}</span>`)
-            $('#roleUser').append(`<span>${js.roles}</span>`)
+            $('#roleUser').append(`<span>${js.shortRole}</span>`)
             const user = `$(
                     <tr>
                         <td>${js.id}</td>
@@ -15,7 +15,7 @@ function userProfile() {
                         <td>${js.lastName}</td>
                         <td>${js.age}</td>
                         <td>${js.email}</td>
-                        <td>${js.roles}</td>
+                        <td>${js.shortRole}</td>
                     </tr>)`;
             $('#oneUser').append(user)
         })

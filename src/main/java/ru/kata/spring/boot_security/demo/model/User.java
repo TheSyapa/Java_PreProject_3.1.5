@@ -96,6 +96,10 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public String getShortRole() {
+        return roles.toString().substring(1, roles.toString().length() - 1);
+    }
+
     // Методы интерфейса
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
