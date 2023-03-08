@@ -1,47 +1,48 @@
 package ru.kata.spring.boot_security.demo.model;
 
-
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "users")
+@Table
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "first_name")
-    @Size(min = 2, message = "min 2 symbols")
+    private int id;
+
+    @Column(name = "first_name", nullable = false)
     private String firstName;
-    @Column(name = "last_name")
-    @Size(min = 2, message = "min 2 symbols")
+
+    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "age")
+
+    @Column(nullable = false)
     private int age;
-    @Column(name = "email")
-    @Size(min = 2, message = "min 2 symbols")
+
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(name = "password")
-    @Size(min = 2, message = "min 2 symbols")
+
+    @Column(nullable = false)
     private String password;
 
+
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
+    @JoinTable (
+            name = "User_Role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(String firstName, String lastName, int age, String email,  String password, Set<Role> roles) {
+    public User(String firstName, String lastName, int age, String email, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
@@ -50,11 +51,11 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -74,21 +75,28 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-    @Override
-    public String getUsername() {
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getEmail() {
         return email;
     }
-    @Override
-    public String getPassword() {
-        return password;
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @Transactional
-    public Collection<Role> getRoles() {
+
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -100,10 +108,19 @@ public class User implements UserDetails {
         return roles.toString().substring(1, roles.toString().length() - 1);
     }
 
-    // Методы интерфейса
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole())).collect(Collectors.toList());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
@@ -126,20 +143,4 @@ public class User implements UserDetails {
         return true;
     }
 
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

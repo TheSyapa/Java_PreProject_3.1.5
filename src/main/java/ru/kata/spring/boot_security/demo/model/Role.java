@@ -1,65 +1,61 @@
 package ru.kata.spring.boot_security.demo.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.*;
 
 @Entity
-@Table(name = "roles")
+@Table
 public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(name = "role")
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String role;
 
-    @ManyToMany(mappedBy = "roles")
     @JsonIgnore
-    private Set<User> userSet;
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+    private Set<User> users = new HashSet<>();
 
     public Role() {
     }
 
-    public Role(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Role(String role) {
+        this.role = role;
     }
 
-    public String getName() {
-        return name;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
-    public Set<User> getUserSet() {
-        return userSet;
+    public String getRole() {
+        return role;
     }
 
-    public void setUserSet(Set<User> userSet) {
-        this.userSet = userSet;
-    }
-
-    // Методы интерфейса
-    @Override
-    public String toString() {
-        return name.replace("ROLE_", "");
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
     public String getAuthority() {
-        return name;
+        return role;
+    }
+
+    @Override
+    public String toString() {
+        return role.replace("ROLE_", "");
     }
 }

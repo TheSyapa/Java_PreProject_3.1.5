@@ -1,13 +1,13 @@
 'use strict';
 
-userProfile()
+getCurrentUser()
 
-function userProfile() {
-    fetch("http://localhost:8080/userApi/profile")
+function getCurrentUser() {
+    fetch("http://localhost:8080/userApi/auth")
         .then(res => res.json())
         .then(js => {
-            $('#emailUser').append(`<span>${js.email}</span>`)
-            $('#roleUser').append(`<span>${js.shortRole}</span>`)
+            $('#emailCurrentUser').append(`<span>${js.email}</span>`)
+            $('#roleCurrentUser').append(`<span>${js.shortRole}</span>`)
             const user = `$(
                     <tr>
                         <td>${js.id}</td>
