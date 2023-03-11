@@ -28,8 +28,8 @@ public class Init {
     @PostConstruct
     @Transactional
     public void doInit() {
-        Role roleUser = new Role("ROLE_USER");
         Role roleAdmin = new Role("ROLE_ADMIN");
+        Role roleUser = new Role("ROLE_USER");
         roleDao.save(roleAdmin);
         roleDao.save(roleUser);
 

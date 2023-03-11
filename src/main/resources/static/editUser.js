@@ -12,7 +12,7 @@ function editUser() {
         let roles = [];
         for (let i = 0; i < formEdit.roles.options.length; i++) {
             if (formEdit.roles.options[i].selected) roles.push({
-                id: formEdit.roles.value,
+                id: formEdit.roles.options[i].value,
                 role: "ROLE_" + formEdit.roles.options[i].text
             });
         }
